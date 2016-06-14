@@ -1,0 +1,13 @@
+﻿<Properties StartupItem="JaCrypt/JaCrypt.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="JaCrypt/Program.cs">
+    <Files>
+      <File FileName="JaCrypt/Program.cs" Line="14" Column="139" />
+      <File FileName="JaCrypt/JaCrypter.cs" Line="30" Column="10" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

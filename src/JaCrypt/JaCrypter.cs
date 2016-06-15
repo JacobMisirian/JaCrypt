@@ -20,20 +20,54 @@ namespace JaCrypt
             return Encrypt(data, key);
         }
         /// <summary>
+        /// Decrypt the specified source, dest and key.
+        /// </summary>
+        /// <param name="source">Source.</param>
+        /// <param name="dest">Destination.</param>
+        /// <param name="key">Key.</param>
+        public void Decrypt(Stream source, Stream dest, byte[] key)
+        {
+            Encrypt(source, dest, key);
+        }
+        /// <summary>
         /// Encrypt the specified data and key.
         /// </summary>
         /// <param name="data">Data.</param>
         /// <param name="key">Key.</param>
         public byte[] Encrypt(byte[] data, byte[] key)
-        {;
+        {
             init(key);
 
             byte[] result = new byte[data.Length];
 
             int keyPos = 0;
             for (int i = 0; i < result.Length; i++)
-                result[i] = (byte)(0xFF - ((nextByte(keyPos < key.Length ? key[keyPos++] : key[keyPos = 0]) + data[i]) % 0xFF));
+            {
+                long b = nextByte(keyPos < key.Length ? key[keyPos] = (byte)nextByte(key[keyPos++]) : key[keyPos = 0]) + data[i];
+                if (b == 0xFF)
+                    b = 0;
+                result[i] = (byte)(0xFF - b);
+            }
             return result;
+        }
+        /// <summary>
+        /// Encrypt the specified source, dest and key.
+        /// </summary>
+        /// <param name="source">Source.</param>
+        /// <param name="dest">Destination.</param>
+        /// <param name="key">Key.</param>
+        public void Encrypt(Stream source, Stream dest, byte[] key)
+        {
+            init(key);
+
+            int keyPos = 0;
+            while (source.Position < source.Length)
+            {
+                long b = nextByte(keyPos < key.Length ? key[keyPos] = (byte)nextByte(key[keyPos++]) : key[keyPos = 0]) + source.ReadByte();
+                if (b == 0xFF)
+                    b = 0;
+                dest.WriteByte((byte)(0xFF - b));
+            }
         }
 
         private void init(byte[] key)
@@ -43,6 +77,7 @@ namespace JaCrypt
             c = 0xA4Ad;
             d = (uint)key.Length;
             x = 0;
+            accum = 0;
 
             for (int i = 0; i < key.Length; i++)
                 x ^= key[i];
@@ -53,16 +88,18 @@ namespace JaCrypt
         private uint c;
         private uint d;
         private uint x;
+        private uint accum;
 
         private uint nextByte(byte k)
         {
+            accum |= k;
             a = rotateLeft(a, x) ^ k;
-            b = (k ^ a) - x;
-            c = (a + b) & x;
-            d ^= x - k;
-            x ^= d;
+            b = (k ^ a) - x * accum;
+            c = (a + accum) & x;
+            d ^= x - k ^ accum;
+            x ^= d + accum;
 
-            return ((a * c) + b - x * d ^ k);
+            return ((a * c) + b - x * d ^ k) * accum;
         }
 
         private uint rotateLeft(uint b, uint bits)

@@ -16,4 +16,9 @@ Now here is that same image with the pixel data encrypted with the key "hellowor
 ![Encrypted Tux]
 (http://i.imgur.com/Z1oFDMY.png)
 
+We can also test this on an image that is solid black (0xFF, 0xFF, 0xFF) with the key "helloworld":
+
+![Black]
+(http://i.imgur.com/HSlhwDM.png)
+
 All of the data in the image is completely obscured and Tux is nowhere to be found!

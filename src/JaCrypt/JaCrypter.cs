@@ -9,17 +9,23 @@ namespace JaCrypt
     /// JaCrypter.
     /// </summary>
     public class JaCrypter
-    {
+    { 
         private class Cypher
         {
-            public int Position { get; set; }
+            public uint Position { get; set; }
 
             public Cypher()
             {
                 Position = 0;
             }
+
+            public uint Increment(int i)
+            {
+                return Position += (uint)i;
+            }
         }
-            
+
+        private Cypher cypher;
         /// <summary>
         /// Decrypt the specified data and key.
         /// </summary>
@@ -36,6 +42,7 @@ namespace JaCrypt
         /// <param name="key">Key.</param>
         public byte[] Encrypt(byte[] data, byte[] key)
         {
+            cypher = new Cypher();
             init(key);
 
             byte[] result = new byte[data.Length];
@@ -53,8 +60,12 @@ namespace JaCrypt
             c = 0xA4Ad;
             d = 0xDC3F;
             x = 0;
+
             for (int i = 0; i < key.Length; i++)
+            {
                 x ^= key[i];
+                cypher.Increment(key[i]);
+            }
         }
 
         private uint a;

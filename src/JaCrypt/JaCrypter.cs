@@ -9,23 +9,7 @@ namespace JaCrypt
     /// JaCrypter.
     /// </summary>
     public class JaCrypter
-    { 
-        private class Cypher
-        {
-            public uint Position { get; set; }
-
-            public Cypher()
-            {
-                Position = 0;
-            }
-
-            public uint Increment(int i)
-            {
-                return Position += (uint)i;
-            }
-        }
-
-        private Cypher cypher;
+    {
         /// <summary>
         /// Decrypt the specified data and key.
         /// </summary>
@@ -41,15 +25,14 @@ namespace JaCrypt
         /// <param name="data">Data.</param>
         /// <param name="key">Key.</param>
         public byte[] Encrypt(byte[] data, byte[] key)
-        {
-            cypher = new Cypher();
+        {;
             init(key);
 
             byte[] result = new byte[data.Length];
 
+            int keyPos = 0;
             for (int i = 0; i < result.Length; i++)
-                result[i] = (byte)(0xFF - ((nextByte() + data[i]) % 0xFF));
-
+                result[i] = (byte)(0xFF - ((nextByte(keyPos < key.Length ? key[keyPos++] : key[keyPos = 0]) + data[i]) % 0xFF));
             return result;
         }
 
@@ -58,14 +41,11 @@ namespace JaCrypt
             a = 0x6B87;
             b = 0x7F43;
             c = 0xA4Ad;
-            d = 0xDC3F;
+            d = (uint)key.Length;
             x = 0;
 
             for (int i = 0; i < key.Length; i++)
-            {
                 x ^= key[i];
-                cypher.Increment(key[i]);
-            }
         }
 
         private uint a;
@@ -74,15 +54,15 @@ namespace JaCrypt
         private uint d;
         private uint x;
 
-        private uint nextByte()
+        private uint nextByte(byte k)
         {
-            a = rotateLeft(a, x);
-            b = (b ^ a) - x;
+            a = rotateLeft(a, x) ^ k;
+            b = (k ^ a) - x;
             c = (a + b) & x;
-            d ^= x - b;
+            d ^= x - k;
             x ^= d;
 
-            return ((a * c) + b - x * d ^ x);
+            return ((a * c) + b - x * d ^ k);
         }
 
         private uint rotateLeft(uint b, uint bits)

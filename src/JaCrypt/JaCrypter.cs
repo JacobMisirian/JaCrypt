@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -10,6 +11,15 @@ namespace JaCrypt
     /// </summary>
     public class JaCrypter
     {
+        /// <summary>
+        /// Decrypt the specified image and key.
+        /// </summary>
+        /// <param name="image">Image.</param>
+        /// <param name="key">Key.</param>
+        public Bitmap Decrypt(Bitmap image, byte[] key)
+        {
+            return Encrypt(image, key);
+        }
         /// <summary>
         /// Decrypt the specified data and key.
         /// </summary>
@@ -28,6 +38,35 @@ namespace JaCrypt
         public void Decrypt(Stream source, Stream dest, byte[] key)
         {
             Encrypt(source, dest, key);
+        }
+        /// <summary>
+        /// Encrypt the specified image and key.
+        /// </summary>
+        /// <param name="image">Image.</param>
+        /// <param name="key">Key.</param>
+        public Bitmap Encrypt(Bitmap image, byte[] key)
+        {
+            byte[] data = new byte[(image.Width * image.Height) * 3];
+            int k = 0;
+            for (int x = 0; x < image.Width; x++)
+            {
+                for (int y = 0; y < image.Height; y++)
+                {
+                    var pixel = image.GetPixel(x, y);
+                    data[k++] = pixel.R;
+                    data[k++] = pixel.G;
+                    data[k++] = pixel.B;
+                }
+            }
+            byte[] encrypted = Encrypt(data, key);
+
+            Bitmap result = new Bitmap(image.Width, image.Height);
+            k = 0;
+            for (int x = 0; x < image.Width; x++)
+                for (int y = 0; y < image.Height; y++)
+                    result.SetPixel(x, y, Color.FromArgb(encrypted[k++], encrypted[k++], encrypted[k++]));
+            
+            return result;
         }
         /// <summary>
         /// Encrypt the specified data and key.

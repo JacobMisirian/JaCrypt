@@ -107,6 +107,7 @@ namespace JaCrypt
                     b = 0;
                 dest.WriteByte((byte)(0xFF - b));
             }
+            dest.Flush();
         }
 
         private void init(byte[] key)

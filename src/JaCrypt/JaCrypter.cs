@@ -133,12 +133,12 @@ namespace JaCrypt
         {
             accum |= k;
             a = rotateLeft(a, x) ^ k;
-            b = (k ^ a) - x * accum;
-            c = (a + accum) & x;
-            d ^= x - k ^ accum;
-            x ^= d + accum;
+            b = (k ^ a) | x;
+            c = (b | accum);
+            d ^= x | k ^ c;
+            x ^= d | accum;
 
-            return ((a * c) + b - x * d ^ k) * accum;
+            return ((a | c) ^ b & x ^ d ^ k);
         }
 
         private uint rotateLeft(uint b, uint bits)

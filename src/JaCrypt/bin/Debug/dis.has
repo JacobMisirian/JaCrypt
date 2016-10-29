@@ -1,8 +1,0 @@
-use IO;
-
-func main () {
-	bytes = File.readBytes (args[0]);
-	foreach (b in bytes)
-		print (format ("{0} ", b.toInt()));
-	println("");
-}

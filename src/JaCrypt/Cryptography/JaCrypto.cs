@@ -37,9 +37,10 @@ namespace JaCrypt.Cryptography
         public byte[] Encrypt(byte[] key, byte[] data)
         {
             uint seed = 0;
-            foreach (byte b in key)
-                seed += new Prng(b).NextByte((byte)(b ^ seed));
-            prng = new Prng((uint)(seed * key.Length));
+            prng = new Prng((uint)key.Length);
+            for (int i = 0; i < key.Length; i++)
+                seed += prng.NextByte((byte)(key[i] * i ^ seed));
+            prng = new Prng(seed);
 
             byte[] result = new byte[data.Length];
 
@@ -52,19 +53,22 @@ namespace JaCrypt.Cryptography
 
             return result;
         }
-        public void Encrypt(byte[] key, Stream data, Stream output)
+        public Stream Encrypt(byte[] key, Stream data, Stream output)
         {
             uint seed = 0;
-            foreach (byte b in key)
-                seed += new Prng(b).NextByte((byte)(b ^ seed));
-            prng = new Prng((uint)(seed * key.Length));
+            prng = new Prng((uint)key.Length);
+            for (int i = 0; i < key.Length; i++)
+                seed += prng.NextByte((byte)(key[i] * i ^ seed));
+            prng = new Prng(seed);
 
             while (data.Position < data.Length)
             {
                 byte b = prng.NextByte(key[data.Position % key.Length]);
                 key[data.Position % key.Length] += b;
                 output.WriteByte((byte)(0xFF - (b + data.ReadByte())));
+                output.Flush();
             }
+            return output;
         }
     }
 }

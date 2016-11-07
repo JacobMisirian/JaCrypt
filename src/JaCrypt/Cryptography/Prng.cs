@@ -4,10 +4,10 @@ namespace JaCrypt.Cryptography
 {
     public class Prng
     {
-        public const uint INITIAL_A = 0x28BD;
-        public const uint INITIAL_B = 0x1E347;
-        public const uint INITIAL_C = 0x12D7A5;
-        public const uint INITIAL_D = 0x75BCEBB;
+        public const uint INITIAL_A = 0x1234;
+        public const uint INITIAL_B = 0xABCDE;
+        public const uint INITIAL_C = 0x141592;
+        public const uint INITIAL_D = 0x3183098;
 
         private uint seed;
 
@@ -29,14 +29,9 @@ namespace JaCrypt.Cryptography
         {
             a ^= (source ^ seed) | b;
             b ^= (c ^ d) ^ seed ^ source;
-            c ^= b | seed ^ (d ^ a);
+            c ^= b | seed ^ (d ^ source);
             d ^= a ^ source | seed;
-            seed++;
-            /*Console.WriteLine("a : {0}", (byte)a);
-            Console.WriteLine("b : {0}", (byte)b);
-            Console.WriteLine("c : {0}", (byte)c);
-            Console.WriteLine("d : {0}", (byte)d);
-            */
+            seed += source;
             return (byte)((a | b) ^ (c ^ d));
         }
     }

@@ -8,17 +8,14 @@ distributed in the form of a C# library that can be included into a project.
 An example of the strength of JaCrypt can be shown using the Linux mascot, Tux.
 Here is an image of Tux:
 
-[Tux]
-(https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Tux.png/220px-Tux.png)
+![Tux](https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Tux.png/220px-Tux.png)
 
 Now here is that same image with the pixel data encrypted with the key "helloworld":
 
-[Encrypted Tux]
-(http://i.imgur.com/Z1oFDMY.png)
+![Encrypted Tux](http://i.imgur.com/Z1oFDMY.png)
 
 We can also test this on an image that is solid black (0xFF, 0xFF, 0xFF) with the key "helloworld":
 
-[Black]
-(http://i.imgur.com/HSlhwDM.png)
+![Black](http://i.imgur.com/HSlhwDM.png)
 
 All of the data in the image is completely obscured and Tux is nowhere to be found!
